@@ -1,7 +1,8 @@
-add_executable(main
+add_executable(pico_emb
         main.c
 )
 
-target_link_libraries(main pico_stdlib freertos mpu6050)
+set_target_properties(pico_emb PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-pico_add_extra_outputs(main)
+target_link_libraries(pico_emb pico_stdlib hardware_i2c  freertos Fusion mpu6050)
+pico_add_extra_outputs(pico_emb)
