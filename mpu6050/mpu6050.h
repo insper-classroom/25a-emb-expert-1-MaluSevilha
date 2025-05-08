@@ -4,7 +4,6 @@
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
-#include <math.h>
 
 #define MPU6050_I2C_DEFAULT 0x68
 #define MPUREG_WHOAMI 0x75     

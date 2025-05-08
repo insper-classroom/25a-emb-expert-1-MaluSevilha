@@ -34,143 +34,85 @@ int mpu6050_reset(imu_c config){
 
 // Faz a leitura do acelerômetro
 int mpu6050_read_acc(imu_c config, int16_t accel[3]){
-    uint8_t buffer[8];
+    uint8_t bufferH, bufferL;
     uint8_t reg_address = MPUREG_ACCEL_XOUT_H;
-    int accel_x = 0, accel_y = 0, accel_z = 0;
 
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
-
-    for (int i = 0; i < 8; i++){
-        accel_x += buffer[i] << (8+i);
-    }
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferH, 1, false);
 
     reg_address = MPUREG_ACCEL_XOUT_L;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferL, 1, false);
 
-    for (int i = 0; i < 8; i++){
-        accel_x += buffer[i] << i;
-    }
+    accel[0] = (bufferH << 7) || bufferL;
 
     reg_address = MPUREG_ACCEL_YOUT_H;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
-
-    for (int i = 0; i < 8; i++){
-        accel_y += buffer[i] << (8+i);
-    }
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferH, 1, false);
 
     reg_address = MPUREG_ACCEL_YOUT_L;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferL, 1, false);
 
-    for (int i = 0; i < 8; i++){
-        accel_y += buffer[i] << i;
-    }
+    accel[1] = (bufferH << 7) || bufferL;
 
     reg_address = MPUREG_ACCEL_ZOUT_H;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
-
-    for (int i = 0; i < 8; i++){
-        accel_z += buffer[i] << (8+i);
-    }
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferH, 1, false);
 
     reg_address = MPUREG_ACCEL_ZOUT_L;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferL, 1, false);
 
-    for (int i = 0; i < 8; i++){
-        accel_z += buffer[i] << i;
-    }
-
-    double accel = accel_x*accel_x + accel_y*accel_y + accel_z*accel_z;
-    accel = pow(accel, 0.5);
-
-    return (int) accel;
+    accel[2] = (bufferH << 7) || bufferL;
 }
 
 // Faz a leitura do giroscópio
 int mpu6050_read_gyro(imu_c config, int16_t gyro[3]){
-    uint8_t buffer[8];
+    uint8_t bufferH, bufferL;
     uint8_t reg_address = MPUREG_GYRO_XOUT_H;
-    int gyro_x = 0, gyro_y = 0, gyro_z = 0;
 
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
-
-    for (int i = 0; i < 8; i++){
-        gyro_x += buffer[i] << (8+i);
-    }
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferH, 1, false);
 
     reg_address = MPUREG_GYRO_XOUT_L;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferL, 1, false);
 
-    for (int i = 0; i < 8; i++){
-        gyro_x += buffer[i] << i;
-    }
+    gyro[0] = (bufferH << 7) || bufferL;
 
     reg_address = MPUREG_GYRO_YOUT_H;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
-
-    for (int i = 0; i < 8; i++){
-        gyro_y += buffer[i] << (8+i);
-    }
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferH, 1, false);
 
     reg_address = MPUREG_GYRO_YOUT_L;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferL, 1, false);
 
-    for (int i = 0; i < 8; i++){
-        gyro_y += buffer[i] << i;
-    }
+    gyro[1] = (bufferH << 7) || bufferL;
 
     reg_address = MPUREG_GYRO_ZOUT_H;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
-
-    for (int i = 0; i < 8; i++){
-        gyro_z += buffer[i] << (8+i);
-    }
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferH, 1, false);
 
     reg_address = MPUREG_GYRO_ZOUT_L;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferL, 1, false);
 
-    for (int i = 0; i < 8; i++){
-        gyro_z += buffer[i] << i;
-    }
-
-    double gyro = gyro_x*gyro_x + gyro_y*gyro_y + gyro_z*gyro_z;
-    gyro = pow(gyro, 0.5);
-
-    return (int) gyro;
-
+    gyro[2] = (bufferH << 7) || bufferL;
 }
 
 // Faz a leitura da temperatura
 int mpu6050_read_temp(imu_c config, int16_t *temp){
-    uint8_t buffer[8];
+    uint8_t bufferH, bufferL;
     uint8_t reg_address = MPUREG_TEMP_OUT_H;
-    int temp = 0;
 
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
-
-    for (int i = 0; i < 8; i++){
-        temp += buffer[i] << (8+i);
-    }
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferH, 1, false);
 
     reg_address = MPUREG_TEMP_OUT_L;
     i2c_write_blocking(config.i2c, MPU6050_I2C_DEFAULT, &reg_address, 1, true); // true to keep master control of bus
-    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, buffer, 1, false);
+    i2c_read_blocking(config.i2c, MPU6050_I2C_DEFAULT, &bufferL, 1, false);
 
-    for (int i = 0; i < 8; i++){
-        temp += buffer[i] << i;
-    }
-
-    return temp;
+    *temp = (bufferH << 7) || bufferL;
 }
