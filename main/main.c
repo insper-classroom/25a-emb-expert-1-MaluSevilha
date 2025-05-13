@@ -36,12 +36,12 @@ void mpu6050_task(void *p) {
     mpu.i2c = i2c_default;
     mpu.pin_scl = I2C_SCL_GPIO;
     mpu.pin_sda = I2C_SDA_GPIO;
-    mpu.acc_scale = 1;
+    mpu.acc_scale = 0;
 
     FusionAhrs ahrs;
     FusionAhrsInitialise(&ahrs);
 
-    mpu6050_reset(mpu);
+    mpu6050_init(mpu);
 
     int16_t acceleration[3], gyro[3], temp;
     float acc_antigo = 0.0f;
@@ -93,7 +93,7 @@ void mpu6050_task(void *p) {
 
         if (euler.angle.roll != last_roll){
             info.id = 1;
-            info.dados = -euler.angle.roll;
+            info.dados = euler.angle.roll;
             last_roll = euler.angle.roll;
             xQueueSend(xQueuePos, &info, 0);
         }
